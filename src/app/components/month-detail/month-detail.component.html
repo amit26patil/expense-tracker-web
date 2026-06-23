@@ -1,0 +1,112 @@
+<div class="month-detail">
+  <header class="app-header">
+    <div class="header-left">
+      <button type="button" class="back-btn" (click)="goBack()" aria-label="Go back">←</button>
+      <div>
+        <p class="eyebrow">Monthly Detail</p>
+        <h1>{{ monthLabel }}</h1>
+      </div>
+    </div>
+  </header>
+
+  <section class="month-nav">
+    <button type="button" class="nav-btn" (click)="prevMonth()" aria-label="Previous month">‹</button>
+    <span class="nav-label">{{ monthLabel }}</span>
+    <button type="button" class="nav-btn" (click)="nextMonth()" aria-label="Next month">›</button>
+  </section>
+
+  <section class="summary-cards" *ngIf="detail && !loading">
+    <article class="card income">
+      <span class="card-label">Income</span>
+      <div class="amounts">
+        <span *ngFor="let line of formatAmounts(detail.total_income)" class="amount">{{ line }}</span>
+        <span *ngIf="!formatAmounts(detail.total_income).length" class="amount muted">—</span>
+      </div>
+    </article>
+    <article class="card expense">
+      <span class="card-label">Expenses</span>
+      <div class="amounts">
+        <span *ngFor="let line of formatAmounts(detail.total_expense)" class="amount">{{ line }}</span>
+        <span *ngIf="!formatAmounts(detail.total_expense).length" class="amount muted">—</span>
+      </div>
+    </article>
+    <article class="card net">
+      <span class="card-label">Net</span>
+      <div class="amounts">
+        <span *ngFor="let line of formatAmounts(detail.net)" class="amount">{{ line }}</span>
+        <span *ngIf="!formatAmounts(detail.net).length" class="amount muted">—</span>
+      </div>
+    </article>
+  </section>
+
+  <div class="loading" *ngIf="loading">Loading…</div>
+
+  <ng-container *ngIf="detail && !loading">
+    <section class="category-section" *ngIf="expenseCategories.length">
+      <h2 class="section-title">Expenses by Category</h2>
+      <div class="category-list">
+        <div *ngFor="let cat of expenseCategories" class="category-card">
+          <button type="button" class="category-header" (click)="toggleCategory('expense-' + cat.category)">
+            <div class="category-info">
+              <span class="category-name">{{ cat.category }}</span>
+              <span class="category-count">{{ cat.count }} transaction{{ cat.count > 1 ? 's' : '' }}</span>
+            </div>
+            <div class="category-right">
+              <div class="category-amount">{{ categoryTotal(cat) }}</div>
+              <span class="category-pct" *ngIf="percentage(cat) > 0">{{ percentage(cat) }}%</span>
+              <span class="expand-icon" [class.expanded]="isExpanded('expense-' + cat.category)">›</span>
+            </div>
+          </button>
+          <div class="category-transactions" *ngIf="isExpanded('expense-' + cat.category)">
+            <ul class="tx-list">
+              <li *ngFor="let tx of cat.transactions">
+                <div class="tx-main">
+                  <span class="tx-date">{{ tx.date }}</span>
+                  <span class="tx-desc" *ngIf="tx.description">{{ tx.description }}</span>
+                </div>
+                <span class="tx-amount expense">
+                  −{{ currencySymbol(tx.currency) }}{{ tx.amount | number: '1.0-2' }}
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="category-section" *ngIf="incomeCategories.length">
+      <h2 class="section-title">Income by Category</h2>
+      <div class="category-list">
+        <div *ngFor="let cat of incomeCategories" class="category-card">
+          <button type="button" class="category-header" (click)="toggleCategory('income-' + cat.category)">
+            <div class="category-info">
+              <span class="category-name">{{ cat.category }}</span>
+              <span class="category-count">{{ cat.count }} transaction{{ cat.count > 1 ? 's' : '' }}</span>
+            </div>
+            <div class="category-right">
+              <div class="category-amount">{{ categoryTotal(cat) }}</div>
+              <span class="expand-icon" [class.expanded]="isExpanded('income-' + cat.category)">›</span>
+            </div>
+          </button>
+          <div class="category-transactions" *ngIf="isExpanded('income-' + cat.category)">
+            <ul class="tx-list">
+              <li *ngFor="let tx of cat.transactions">
+                <div class="tx-main">
+                  <span class="tx-date">{{ tx.date }}</span>
+                  <span class="tx-desc" *ngIf="tx.description">{{ tx.description }}</span>
+                </div>
+                <span class="tx-amount income">
+                  +{{ currencySymbol(tx.currency) }}{{ tx.amount | number: '1.0-2' }}
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="empty-msg" *ngIf="!expenseCategories.length && !incomeCategories.length">
+      No transactions for this month.
+    </p>
+  </ng-container>
+</div>

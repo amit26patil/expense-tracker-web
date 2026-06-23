@@ -1,0 +1,114 @@
+<div class="month-view">
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">Expense Tracker</p>
+      <h1>{{ monthLabel }}</h1>
+    </div>
+    <button type="button" class="today-btn" (click)="goToToday()">Today</button>
+  </header>
+
+  <section class="month-nav">
+    <button type="button" class="nav-btn" (click)="prevMonth()" aria-label="Previous month">‹</button>
+    <span class="nav-label">{{ monthLabel }}</span>
+    <button type="button" class="nav-btn" (click)="nextMonth()" aria-label="Next month">›</button>
+  </section>
+
+  <section class="summary-cards" *ngIf="summary && !loading">
+    <article class="card income">
+      <span class="card-label">Income</span>
+      <div class="amounts">
+        <span *ngFor="let line of formatAmounts(summary.total_income)" class="amount">{{ line }}</span>
+        <span *ngIf="!formatAmounts(summary.total_income).length" class="amount muted">—</span>
+      </div>
+    </article>
+    <article class="card expense">
+      <span class="card-label">Expenses</span>
+      <div class="amounts">
+        <span *ngFor="let line of formatAmounts(summary.total_expense)" class="amount">{{ line }}</span>
+        <span *ngIf="!formatAmounts(summary.total_expense).length" class="amount muted">—</span>
+      </div>
+    </article>
+    <article class="card net">
+      <span class="card-label">Net</span>
+      <div class="amounts">
+        <span *ngFor="let line of formatAmounts(summary.net)" class="amount">{{ line }}</span>
+        <span *ngIf="!formatAmounts(summary.net).length" class="amount muted">—</span>
+      </div>
+    </article>
+  </section>
+
+  <section class="detail-link" *ngIf="summary && !loading">
+    <button type="button" class="view-details-btn" (click)="viewDetails()">View Monthly Details →</button>
+  </section>
+
+  <section class="calendar" *ngIf="!loading">
+    <div class="weekdays">
+      <span *ngFor="let wd of weekdays">{{ wd }}</span>
+    </div>
+    <div class="grid">
+      <button
+        type="button"
+        *ngFor="let day of calendarDays"
+        class="day-cell"
+        [class.outside]="!day.inMonth"
+        [class.today]="isToday(day)"
+        [class.selected]="isSelected(day)"
+        [class.has-activity]="day.hasActivity"
+        (click)="selectDay(day)"
+      >
+        <span class="day-num">{{ day.date.getDate() }}</span>
+        <span class="dots" *ngIf="day.hasActivity">
+          <span class="dot income" *ngIf="formatAmounts(day.income).length"></span>
+          <span class="dot expense" *ngIf="formatAmounts(day.expense).length"></span>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <section class="day-detail" *ngIf="selectedDay">
+    <div class="day-detail-header">
+      <h2>{{ selectedDay.date | date: 'EEEE, MMM d' }}</h2>
+      <button type="button" class="add-btn" (click)="openForm()">+ Add</button>
+    </div>
+
+    <div class="day-totals">
+      <div class="mini-stat income">
+        <span>Income</span>
+        <strong>{{ formatAmounts(selectedDay.income).join(' · ') || '—' }}</strong>
+      </div>
+      <div class="mini-stat expense">
+        <span>Expense</span>
+        <strong>{{ formatAmounts(selectedDay.expense).join(' · ') || '—' }}</strong>
+      </div>
+    </div>
+
+    <ul class="tx-list" *ngIf="selectedDay.transactions.length; else emptyDay">
+      <li *ngFor="let tx of selectedDay.transactions" [class]="tx.type">
+        <div class="tx-main">
+          <span class="tx-category">{{ tx.category }}</span>
+          <span class="tx-desc" *ngIf="tx.description">{{ tx.description }}</span>
+        </div>
+        <div class="tx-right">
+          <span class="tx-amount" [class.income]="tx.type === 'income'" [class.expense]="tx.type === 'expense'">
+            {{ tx.type === 'income' ? '+' : '−' }}{{ currencySymbol(tx.currency) }}{{ tx.amount | number: '1.0-2' }}
+          </span>
+          <button type="button" class="delete-btn" (click)="deleteTransaction(tx)" aria-label="Delete">🗑</button>
+        </div>
+      </li>
+    </ul>
+    <ng-template #emptyDay>
+      <p class="empty-msg">No transactions yet. Tap + Add to record one.</p>
+    </ng-template>
+  </section>
+
+  <div class="loading" *ngIf="loading">Loading…</div>
+
+  <button type="button" class="fab" (click)="openForm()" aria-label="Add transaction">+</button>
+
+  <app-transaction-form
+    [open]="showForm"
+    [selectedDate]="selectedDate || todayIso"
+    (closed)="showForm = false"
+    (saved)="onTransactionSaved()"
+  ></app-transaction-form>
+</div>

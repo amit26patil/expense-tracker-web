@@ -1,0 +1,76 @@
+<div class="overlay" *ngIf="open" (click)="close()"></div>
+
+<section class="sheet" *ngIf="open" role="dialog" aria-labelledby="form-title">
+  <header class="sheet-header">
+    <h2 id="form-title">Add Transaction</h2>
+    <button type="button" class="icon-btn" (click)="close()" aria-label="Close">✕</button>
+  </header>
+
+  <p class="date-label">{{ selectedDate | date: 'fullDate' }}</p>
+
+  <form (ngSubmit)="submit()" class="form">
+    <div class="type-toggle">
+      <button
+        type="button"
+        [class.active]="type === 'expense'"
+        class="toggle-btn expense"
+        (click)="type = 'expense'; onTypeChange()"
+      >
+        Expense
+      </button>
+      <button
+        type="button"
+        [class.active]="type === 'income'"
+        class="toggle-btn income"
+        (click)="type = 'income'; onTypeChange()"
+      >
+        Income
+      </button>
+    </div>
+
+    <label>
+      Category
+      <select [(ngModel)]="category" name="category" required>
+        <option *ngFor="let cat of categories" [value]="cat.name">{{ cat.name }}</option>
+      </select>
+    </label>
+
+    <div class="row">
+      <label class="grow">
+        Amount
+        <input
+          type="number"
+          [(ngModel)]="amount"
+          name="amount"
+          min="0.01"
+          step="0.01"
+          placeholder="0.00"
+          required
+        />
+      </label>
+      <label>
+        Currency
+        <select [(ngModel)]="currency" name="currency">
+          <option *ngFor="let c of currencies" [value]="c">{{ c }}</option>
+        </select>
+      </label>
+    </div>
+
+    <label>
+      Description (optional)
+      <input
+        type="text"
+        [(ngModel)]="description"
+        name="description"
+        placeholder="What was this for?"
+        maxlength="200"
+      />
+    </label>
+
+    <p class="error" *ngIf="error">{{ error }}</p>
+
+    <button type="submit" class="submit-btn" [disabled]="saving">
+      {{ saving ? 'Saving…' : 'Save' }}
+    </button>
+  </form>
+</section>

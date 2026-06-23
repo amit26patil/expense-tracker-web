@@ -1,0 +1,264 @@
+.month-detail {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1rem 1rem 4rem;
+  min-height: 100dvh;
+}
+
+.app-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-top: env(safe-area-inset-top);
+}
+
+.header-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.back-btn {
+  border: none;
+  background: #f8fafc;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 1.25rem;
+  color: #334155;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6366f1;
+  font-weight: 700;
+}
+
+.header-left h1 {
+  margin: 0.25rem 0 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  background: #fff;
+  border-radius: 14px;
+  padding: 0.5rem;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
+}
+
+.nav-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: #f8fafc;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #334155;
+  cursor: pointer;
+}
+
+.nav-label {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.625rem;
+  margin-bottom: 1.25rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 0.75rem;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
+
+  .card-label {
+    display: block;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    margin-bottom: 0.375rem;
+  }
+
+  &.income .card-label { color: #16a34a; }
+  &.expense .card-label { color: #dc2626; }
+  &.net .card-label { color: #6366f1; }
+
+  .amount {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.4;
+
+    &.muted {
+      color: #94a3b8;
+    }
+  }
+}
+
+.section-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.75rem;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.category-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0.875rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.category-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.category-name {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: #0f172a;
+}
+
+.category-count {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.category-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.category-amount {
+  font-weight: 800;
+  font-size: 0.875rem;
+  color: #dc2626;
+}
+
+.category-pct {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #94a3b8;
+  background: #f1f5f9;
+  padding: 0.125rem 0.375rem;
+  border-radius: 999px;
+}
+
+.expand-icon {
+  font-size: 1.125rem;
+  color: #94a3b8;
+  transition: transform 0.2s ease;
+  display: inline-block;
+
+  &.expanded {
+    transform: rotate(90deg);
+  }
+}
+
+.category-transactions {
+  border-top: 1px solid #f1f5f9;
+}
+
+.tx-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 0.875rem;
+    border-bottom: 1px solid #f8fafc;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.tx-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.tx-date {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.tx-desc {
+  font-size: 0.8125rem;
+  color: #334155;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tx-amount {
+  font-weight: 800;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+
+  &.income { color: #16a34a; }
+  &.expense { color: #dc2626; }
+}
+
+.empty-msg {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.875rem;
+  margin: 2rem 0;
+}
+
+.loading {
+  text-align: center;
+  color: #64748b;
+  padding: 2rem;
+}
