@@ -6,6 +6,12 @@ import { ExpenseService } from '../../services/expense.service';
 import { DaySummary, MonthSummary, Transaction } from '../../models/transaction.model';
 import { TransactionFormComponent } from '../transaction-form/transaction-form.component';
 
+interface ExcelUploadResponse {
+  filename: string;
+  record_count: number;
+  records: any[];
+}
+
 interface CalendarDay {
   date: Date;
   inMonth: boolean;
@@ -204,6 +210,23 @@ export class MonthViewComponent implements OnInit {
     this.router.navigate(['/monthly-detail'], {
       queryParams: { year: this.viewYear, month: this.viewMonth },
     });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+    this.expenseService.uploadExcel(file).subscribe({
+      next: (response: ExcelUploadResponse) => {
+        console.log('Upload response:', response);
+      },
+      error: (err) => {
+        console.error('Upload failed:', err);
+      },
+    });
+
+    input.value = '';
   }
 
   private toIsoDate(date: Date): string {

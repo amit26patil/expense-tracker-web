@@ -58,4 +58,10 @@ export class ExpenseService {
   getCurrencies(): Observable<string[]> {
     return this.http.get<string[]>(`${this.baseUrl}/currencies`);
   }
+
+  uploadExcel(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(`${this.baseUrl}/upload-excel`, formData);
+  }
 }

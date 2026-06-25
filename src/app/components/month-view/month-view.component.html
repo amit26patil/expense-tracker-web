@@ -103,6 +103,23 @@
 
   <div class="loading" *ngIf="loading">Loading…</div>
 
+  <section class="upload-section">
+    <label class="upload-card">
+      <span class="upload-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </span>
+      <span class="upload-text">
+        <span class="upload-label">Upload Bank Statement</span>
+        <span class="upload-hint">.xls or .xlsx file</span>
+      </span>
+      <input type="file" accept=".xls,.xlsx" (change)="onFileSelected($event)" hidden />
+    </label>
+  </section>
+
   <button type="button" class="fab" (click)="openForm()" aria-label="Add transaction">+</button>
 
   <app-transaction-form
