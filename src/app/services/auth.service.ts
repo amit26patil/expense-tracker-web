@@ -36,6 +36,8 @@ export class AuthService {
       sessionChecksEnabled: environment.auth.sessionChecksEnabled,
       showDebugInformation: environment.auth.showDebugInformation,
       strictDiscoveryDocumentValidation: false,
+      oidc: false,
+      disablePKCE: true,
       tokenEndpoint: 'https://oauth2.googleapis.com/token',
       userinfoEndpoint: 'https://openidconnect.googleapis.com/v1/userinfo',
       revocationEndpoint: 'https://oauth2.googleapis.com/revoke',
@@ -46,10 +48,12 @@ export class AuthService {
 
   async initAuth(): Promise<boolean> {
     await this.loadConfig();
-    await this.oauthService.loadDiscoveryDocumentAndTryLogin();
     if (this.oauthService.hasValidAccessToken()) {
       this.oauthService.setupAutomaticSilentRefresh();
       return true;
+    }
+    else {
+      await this.oauthService.tryLogin();
     }
     return false;
   }
