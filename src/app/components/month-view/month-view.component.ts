@@ -217,11 +217,17 @@ export class MonthViewComponent implements OnInit {
     if (!input.files?.length) return;
 
     const file = input.files[0];
+    this.loading = true;
+
     this.expenseService.uploadExcel(file).subscribe({
       next: (response: ExcelUploadResponse) => {
-        console.log('Upload response:', response);
+        this.loading = false;
+        this.router.navigate(['/transaction-review'], {
+          state: { records: response.records, filename: response.filename },
+        });
       },
       error: (err) => {
+        this.loading = false;
         console.error('Upload failed:', err);
       },
     });

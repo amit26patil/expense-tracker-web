@@ -1,0 +1,110 @@
+<div class="review-page">
+  <header class="review-header">
+    <button type="button" class="back-btn" (click)="goBack()">← Back</button>
+    <h1>Review Transactions</h1>
+    <span class="filename">{{ filename }}</span>
+  </header>
+
+  <!-- Loading State -->
+  <section class="loading-section" *ngIf="modelState !== 'ready' && !saved && !error">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <h2>Processing Bank Statement</h2>
+      <p class="progress-text">{{ progressText || 'Initializing AI model...' }}</p>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progressPercent"></div>
+      </div>
+      <p class="progress-hint" *ngIf="modelState === 'loading'">
+        First load downloads ~2GB model. Subsequent loads use cache.
+      </p>
+    </div>
+  </section>
+
+  <!-- Error State -->
+  <section class="error-section" *ngIf="error">
+    <div class="error-card">
+      <p>{{ error }}</p>
+      <button type="button" class="btn-primary" (click)="goBack()">Go Back</button>
+    </div>
+  </section>
+
+  <!-- Saved State -->
+  <section class="saved-section" *ngIf="saved">
+    <div class="saved-card">
+      <div class="saved-icon">✓</div>
+      <h2>Transactions Saved</h2>
+      <p>{{ rows.length }} transactions saved to IndexedDB</p>
+      <div class="saved-actions">
+        <button type="button" class="btn-primary" (click)="goBack()">Upload More</button>
+        <button type="button" class="btn-secondary" (click)="viewMonthly()">View Monthly Details</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Review Table -->
+  <section class="review-section" *ngIf="modelState === 'ready' && !saved">
+    <div class="review-toolbar">
+      <div class="stats">
+        <span class="stat">{{ rows.length }} transactions</span>
+        <span class="stat income">{{ incomeCount }} income</span>
+        <span class="stat expense">{{ expenseCount }} expense</span>
+      </div>
+      <label class="auto-save-toggle">
+        <input type="checkbox" [(ngModel)]="autoSave" />
+        Auto-save on load
+      </label>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="review-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Remarks</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows" [class.changed]="row.selectedCategory !== row.originalCategory || row.selectedType !== row.originalType">
+            <td class="col-date">{{ row.date }}</td>
+            <td class="col-remarks">{{ row.remarks }}</td>
+            <td class="col-amount" [class.income]="row.deposit > 0" [class.expense]="row.withdrawal > 0">
+              <span *ngIf="row.withdrawal > 0">−₹{{ formatAmount(row.withdrawal) }}</span>
+              <span *ngIf="row.deposit > 0">+₹{{ formatAmount(row.deposit) }}</span>
+            </td>
+            <td class="col-category">
+              <select
+                [ngModel]="row.selectedCategory"
+                (ngModelChange)="onCategoryChange(row, $event)"
+                class="category-select"
+              >
+                <option *ngFor="let cat of getCategoriesForType(row.selectedType)" [value]="cat.name">
+                  {{ cat.name }}
+                </option>
+              </select>
+            </td>
+            <td class="col-type">
+              <select
+                [ngModel]="row.selectedType"
+                (ngModelChange)="onTypeChange(row, $event)"
+                class="type-select"
+              >
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="review-actions">
+      <button type="button" class="btn-secondary" (click)="goBack()">Cancel</button>
+      <button type="button" class="btn-primary" (click)="saveAll()" [disabled]="saving || !rows.length">
+        {{ saving ? 'Saving...' : 'Save All to IndexedDB' }}
+      </button>
+    </div>
+  </section>
+</div>
